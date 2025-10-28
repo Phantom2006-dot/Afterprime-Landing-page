@@ -1,25 +1,26 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import Image from "next/image"
 
 const platforms = [
   {
     name: "MetaTrader 4",
     description: "The industry standard. Familiar, powerful, reliable.",
     features: ["Expert Advisors", "Custom Indicators", "Backtesting"],
-    icon: "📊",
+    icon: "/mt4.png",
   },
   {
     name: "MetaTrader 5",
     description: "Next generation. More assets, more power, more control.",
     features: ["Multi-Asset Trading", "Advanced Analytics", "Hedging"],
-    icon: "🚀",
+    icon: "/mt5.png",
   },
   {
     name: "TraderEvolution",
     description: "Modern web platform. Trade anywhere, anytime.",
     features: ["Web-Based", "Mobile Ready", "Real-Time Charts"],
-    icon: "💻",
+    icon: "/tradeevo.png",
   },
   {
     name: "FIX API",
@@ -62,13 +63,13 @@ export default function ProPlatformsSection() {
   return (
     <section
       id="platforms"
-      className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background to-brand-navy-light"
+      className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#1a1a1a] to-[#0f172a]"
     >
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">Pro Platforms</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-[#94a3b8] max-w-2xl mx-auto">
             Choose your trading environment. All platforms, same low costs and flow rewards.
           </p>
         </div>
@@ -81,7 +82,7 @@ export default function ProPlatformsSection() {
               ref={(el) => {
                 cardsRef.current[index] = el
               }}
-              className={`group relative p-8 rounded-xl border border-border bg-card/50 backdrop-blur-sm hover:border-brand-gold/50 transition-all duration-500 overflow-hidden ${
+              className={`group relative p-8 rounded-xl border border-[#374151] bg-[#1e293b]/50 backdrop-blur-sm hover:border-[#FFD700]/50 transition-all duration-500 overflow-hidden ${
                 visibleCards[index] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
               }`}
               style={{
@@ -89,18 +90,34 @@ export default function ProPlatformsSection() {
               }}
             >
               {/* Gradient background on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-brand-gold/10 via-transparent to-brand-pink/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#FFD700]/10 via-transparent to-[#FF69B4]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
               {/* Content */}
               <div className="relative z-10">
-                <div className="text-5xl mb-4">{platform.icon}</div>
+                <div className="mb-6">
+                  {platform.icon.startsWith("/") ? (
+                    <div className="w-20 h-20 rounded-2xl overflow-hidden bg-white/5 border border-[#374151] p-3">
+                      <Image 
+                        src={platform.icon} 
+                        alt={platform.name}
+                        width={80}
+                        height={80}
+                        className="w-full h-full object-contain rounded-lg"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-20 h-20 rounded-2xl bg-white/5 border border-[#374151] flex items-center justify-center text-3xl">
+                      {platform.icon}
+                    </div>
+                  )}
+                </div>
                 <h3 className="text-2xl font-bold text-white mb-2">{platform.name}</h3>
-                <p className="text-muted-foreground mb-6">{platform.description}</p>
+                <p className="text-[#94a3b8] mb-6">{platform.description}</p>
 
                 <div className="space-y-2">
                   {platform.features.map((feature, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <div className="w-1.5 h-1.5 rounded-full bg-brand-gold" />
+                    <div key={i} className="flex items-center gap-2 text-sm text-[#94a3b8]">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#FFD700]" />
                       {feature}
                     </div>
                   ))}
