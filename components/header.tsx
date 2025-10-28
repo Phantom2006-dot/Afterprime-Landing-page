@@ -1,128 +1,81 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 
-const platforms = [
-  {
-    name: "MetaTrader 4",
-    description: "The industry standard. Familiar, powerful, reliable.",
-    features: ["Expert Advisors", "Custom Indicators", "Backtesting"],
-    icon: "/mt4.png",
-  },
-  {
-    name: "MetaTrader 5",
-    description: "Next generation. More assets, more power, more control.",
-    features: ["Multi-Asset Trading", "Advanced Analytics", "Hedging"],
-    icon: "/mt5.png",
-  },
-  {
-    name: "TraderEvolution",
-    description: "Modern web platform. Trade anywhere, anytime.",
-    features: ["Web-Based", "Mobile Ready", "Real-Time Charts"],
-    icon: "/tradeevo.png",
-  },
-  {
-    name: "FIX API",
-    description: "Direct market access. For serious traders and institutions.",
-    features: ["Ultra-Low Latency", "Custom Integration", "Institutional Grade"],
-    icon: "⚡",
-  },
-]
-
-export default function ProPlatformsSection() {
-  const [visibleCards, setVisibleCards] = useState<boolean[]>(new Array(platforms.length).fill(false))
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([])
+export default function Header() {
+  const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = cardsRef.current.indexOf(entry.target as HTMLDivElement)
-            if (index !== -1) {
-              setVisibleCards((prev) => {
-                const newVisible = [...prev]
-                newVisible[index] = true
-                return newVisible
-              })
-            }
-          }
-        })
-      },
-      { threshold: 0.1 },
-    )
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50)
+    }
 
-    cardsRef.current.forEach((card) => {
-      if (card) observer.observe(card)
-    })
-
-    return () => observer.disconnect()
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   return (
-    <section
-      id="platforms"
-      className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#1a1a1a] to-[#0f172a]"
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-gradient-to-r from-[#0a1128]/95 via-[#0f172a]/95 to-[#0a1128]/95 backdrop-blur-md border-b border-[#FFD700]/20"
+          : "bg-transparent"
+      }`}
     >
-      <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">Pro Platforms</h2>
-          <p className="text-lg text-[#94a3b8] max-w-2xl mx-auto">
-            Choose your trading environment. All platforms, same low costs and flow rewards.
-          </p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        {/* Logo and Branding */}
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 relative flex-shrink-0">
+            <Image
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Adobe%20Express%20-%20file-hd0tzraST5XcrazSXdKLcX9Toa4Efc.png"
+              alt="Afterprime Logo"
+              width={48}
+              height={48}
+              className="w-full h-full object-contain"
+            />
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-white font-bold text-sm sm:text-lg whitespace-nowrap">Afterprime</span>
+            <span className="text-xs bg-gradient-to-r from-[#FFD700] via-[#FFA500] to-[#FF69B4] bg-clip-text text-transparent font-semibold whitespace-nowrap">
+              GET PAID TO TRADE
+            </span>
+          </div>
         </div>
 
-        {/* Platforms Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {platforms.map((platform, index) => (
-            <div
-              key={index}
-              ref={(el) => {
-                cardsRef.current[index] = el
-              }}
-              className={`group relative p-8 rounded-xl border border-[#374151] bg-[#1e293b]/50 backdrop-blur-sm hover:border-[#FFD700]/50 transition-all duration-500 overflow-hidden ${
-                visibleCards[index] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-              }`}
-              style={{
-                transitionDelay: visibleCards[index] ? `${index * 100}ms` : "0ms",
-              }}
-            >
-              {/* Gradient background on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#FFD700]/10 via-transparent to-[#FF69B4]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        {/* Navigation */}
+        <nav className="hidden md:flex items-center gap-8">
+          <a
+            href="#value"
+            className="text-[#94a3b8] hover:text-[#FFD700] transition-colors text-sm font-medium"
+          >
+            Value
+          </a>
+          <a
+            href="#costs"
+            className="text-[#94a3b8] hover:text-[#FFA500] transition-colors text-sm font-medium"
+          >
+            Costs
+          </a>
+          <a
+            href="#rewards"
+            className="text-[#94a3b8] hover:text-[#FF69B4] transition-colors text-sm font-medium"
+          >
+            Rewards
+          </a>
+          <a
+            href="#platforms"
+            className="text-[#94a3b8] hover:text-[#9333ea] transition-colors text-sm font-medium"
+          >
+            Platforms
+          </a>
+        </nav>
 
-              {/* Content */}
-              <div className="relative z-10">
-                <div className="mb-4">
-                  {platform.icon.startsWith("/") ? (
-                    <Image 
-                      src={platform.icon} 
-                      alt={platform.name}
-                      width={48}
-                      height={48}
-                      className="w-12 h-12 object-contain"
-                    />
-                  ) : (
-                    <div className="text-5xl">{platform.icon}</div>
-                  )}
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-2">{platform.name}</h3>
-                <p className="text-[#94a3b8] mb-6">{platform.description}</p>
-
-                <div className="space-y-2">
-                  {platform.features.map((feature, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm text-[#94a3b8]">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#FFD700]" />
-                      {feature}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* CTA Button */}
+        <button className="px-4 sm:px-6 py-2.5 rounded-lg bg-gradient-to-r from-[#FFD700] via-[#FFA500] to-[#FF69B4] text-[#1a1a1a] font-bold text-xs sm:text-sm hover:shadow-2xl hover:shadow-[#FF69B4]/60 transition-all duration-300 hover:scale-105 active:scale-95 flex-shrink-0">
+          Get Started
+        </button>
       </div>
-    </section>
+    </header>
   )
 }
