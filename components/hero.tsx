@@ -46,7 +46,7 @@ export default function Hero() {
 
           {/* Subheadline */}
           <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Lowest verified costs. Flow rewards. Professional platforms. Real alignment with traders.
+            #1 Lowest verified costs. Flow rewards. Professional platforms. Real alignment with traders.
           </p>
 
          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
