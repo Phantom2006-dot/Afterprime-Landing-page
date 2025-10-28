@@ -49,14 +49,14 @@ export default function Hero() {
             Lowest verified costs. Flow rewards. Professional platforms. Real alignment with traders.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="px-8 py-4 rounded-lg bg-gradient-to-r from-brand-gold via-brand-orange to-brand-pink text-background font-bold text-base sm:text-lg hover:shadow-2xl hover:shadow-brand-pink/60 transition-all duration-300 hover:scale-105 active:scale-95 w-full sm:w-auto min-h-14 flex items-center justify-center">
-              Start Trading
-            </button>
-            <button className="px-8 py-4 rounded-lg border-2 border-brand-gold text-brand-gold font-bold text-base sm:text-lg hover:bg-brand-gold/10 hover:shadow-lg hover:shadow-brand-gold/30 transition-all duration-300 w-full sm:w-auto min-h-14 flex items-center justify-center">
-              Learn More
-            </button>
-          </div>
+         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+  <button className="px-8 py-4 rounded-lg bg-gradient-to-r from-[#FFD700] via-[#FFA500] to-[#FF69B4] text-[#1a1a1a] font-bold text-base sm:text-lg hover:shadow-2xl hover:shadow-[#FF69B4]/60 transition-all duration-300 hover:scale-105 active:scale-95 w-full sm:w-auto min-h-14 flex items-center justify-center">
+    Start Trading
+  </button>
+  <button className="px-8 py-4 rounded-lg border-2 border-[#FFD700] text-[#FFD700] font-bold text-base sm:text-lg hover:bg-[#FFD700]/10 hover:shadow-lg hover:shadow-[#FFD700]/30 transition-all duration-300 w-full sm:w-auto min-h-14 flex items-center justify-center">
+    Learn More
+  </button>
+</div>
         </div>
 
         {/* Scroll Indicator */}
