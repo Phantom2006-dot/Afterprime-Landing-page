@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import Header from "@/components/header"
 import Hero from "@/components/hero"
 import ValuePropositions from "@/components/value-propositions"
-import CostAdvantageSection from "@/components/cost-advantage-section"
+// import CostAdvantageSection from "@/components/cost-advantage-section"
 import FlowRewardsSection from "@/components/flow-rewards-section"
 import ProPlatformsSection from "@/components/pro-platforms-section"
 import MultiAssetSection from "@/components/multi-asset-section"
@@ -40,7 +40,7 @@ export default function Home() {
           <AfterprimeProfitCalculator />
         </div>
       </section>
-      <CostAdvantageSection />
+      {/* <CostAdvantageSection /> */}
       <FlowRewardsSection />
       <ProPlatformsSection />
       <MultiAssetSection />
