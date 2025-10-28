@@ -391,11 +391,25 @@ const AfterprimeProfitCalculator = () => {
   }, [])
 
   return (
+     <section
+      id="costs"
+      ref={sectionRef}
+      className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background to-brand-navy-light"
+    >
+      <div className="max-w-7xl mx-auto">
+        {/* Section Header */}
+        <div className="text-center mb-16">
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">See Your Cost Advantage</h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Interactive calculator showing real profit differences. Adjust your parameters and watch the advantage
+            compound.
+          </p>
+        </div>
     <div className="w-full space-y-6 rounded-2xl border border-white/10 bg-gradient-to-br from-slate-900/50 to-slate-800/30 p-6 md:p-8 backdrop-blur-sm">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white md:text-3xl">See Your Cost Advantage</h2>
+          <h2 className="text-2xl font-bold text-white md:text-3xl">Your Cost Advantage</h2>
           <p className="mt-2 text-sm text-slate-400">
             Adjust balance, months, lots, and monthly return. Broker costs use ForexBenchmark 7‑day averages.
           </p>
@@ -567,6 +581,8 @@ const AfterprimeProfitCalculator = () => {
         </p>
       </div>
     </div>
+           </div>
+    </section>
   )
 }
 
