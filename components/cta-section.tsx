@@ -37,12 +37,12 @@ export default function CTASection() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="px-8 py-4 rounded-lg bg-gradient-to-r from-brand-gold via-brand-orange to-brand-pink text-background font-bold text-lg hover:shadow-2xl hover:shadow-brand-pink/50 transition-all duration-300 hover:scale-105 w-full sm:w-auto">
-              Start Trading Now
-            </button>
-            <button className="px-8 py-4 rounded-lg border-2 border-brand-gold text-brand-gold font-bold text-lg hover:bg-brand-gold/10 transition-all duration-300 w-full sm:w-auto">
-              Schedule Demo
-            </button>
+           <button className="px-8 py-4 rounded-lg bg-gradient-to-r from-[#FFD700] via-[#FFA500] to-[#FF69B4] text-[#1a1a1a] font-bold text-lg hover:shadow-2xl hover:shadow-[#FF69B4]/50 transition-all duration-300 hover:scale-105 w-full sm:w-auto">
+  Start Trading Now
+</button>
+<button className="px-8 py-4 rounded-lg border-2 border-[#FFD700] text-[#FFD700] font-bold text-lg hover:bg-[#FFD700]/10 transition-all duration-300 w-full sm:w-auto">
+  Schedule Demo
+</button>
           </div>
         </div>
       </div>
