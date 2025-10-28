@@ -37,12 +37,12 @@ export default function Hero() {
         >
           {/* Main Headline */}
           <h1 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-            <span className="bg-gradient-to-r from-brand-gold via-brand-orange to-brand-pink bg-clip-text text-transparent">
-              Get Paid
-            </span>
-            <br />
-            <span className="text-white">to Trade</span>
-          </h1>
+  <span className="bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 bg-clip-text text-transparent">
+    Get Paid
+  </span>
+  <br />
+  <span className="text-white">to Trade</span>
+</h1>
 
           {/* Subheadline */}
           <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
