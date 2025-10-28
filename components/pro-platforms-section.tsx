@@ -63,7 +63,7 @@ export default function ProPlatformsSection() {
   return (
     <section
       id="platforms"
-      className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#1a1a1a] to-[#0f172a]"
+      className="relative py-20 px-4 sm:px-6 lg:px-8 bg-background"
     >
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
