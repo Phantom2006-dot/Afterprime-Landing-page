@@ -3,9 +3,29 @@
 import { useEffect, useRef, useState } from "react"
 import { Chart } from "chart.js/auto"
 
-const AfterprimeProfitCalculator = () => {
+const CostAdvantageSection = () => {
   const chartRef = useRef(null)
   const chartInstance = useRef(null)
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const [isVisible, setIsVisible] = useState(false)
+
+  // Intersection Observer for scroll animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+        }
+      },
+      { threshold: 0.1 },
+    )
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current)
+    }
+
+    return () => observer.disconnect()
+  }, [])
 
   // State for all inputs
   const [inputs, setInputs] = useState({
@@ -100,13 +120,13 @@ const AfterprimeProfitCalculator = () => {
   }
 
   // Helper functions
-  const USD = (v) =>
+  const USD = (v: number) =>
     v.toLocaleString(undefined, {
       style: "currency",
       currency: "USD",
       maximumFractionDigits: 0,
     })
-  const clamp = (v, min, max) => Math.min(Math.max(v, min), max)
+  const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max)
 
   // Build select options
   const buildOptions = (allowNone = false) => {
@@ -137,7 +157,7 @@ const AfterprimeProfitCalculator = () => {
   }
 
   // Sync inputs
-  const syncInput = (field, value, min, max, step) => {
+  const syncInput = (field: string, value: string, min: number, max: number, step: number) => {
     let numValue = Number.parseFloat(value)
     if (isNaN(numValue)) numValue = min
     numValue = clamp(numValue, min, max)
@@ -152,7 +172,7 @@ const AfterprimeProfitCalculator = () => {
   // RightLabels plugin
   const RightLabels = {
     id: "RightLabels",
-    afterDatasetsDraw: (chart) => {
+    afterDatasetsDraw: (chart: any) => {
       try {
         const ctx = chart.ctx
         const chartArea = chart.chartArea
@@ -163,16 +183,16 @@ const AfterprimeProfitCalculator = () => {
         const bottom = chartArea.bottom
         const h = 30
         const step = 6
-        const used = []
+        const used: number[][] = []
 
         ctx.save()
         ctx.font = "12px sans-serif"
         ctx.textBaseline = "top"
         ctx.fillStyle = "#cbd5e1"
 
-        const startBase = window.__calcStart || 1
+        const startBase = (window as any).__calcStart || 1
 
-        chart.data.datasets.forEach((dataset, i) => {
+        chart.data.datasets.forEach((dataset: any, i: number) => {
           const meta = chart.getDatasetMeta(i)
           if (!meta || !meta.data || !meta.data.length) return
 
@@ -183,7 +203,7 @@ const AfterprimeProfitCalculator = () => {
           let y = point.y - 14
           let tries = 0
 
-          const clash = (a, b) => !(y + h < a || y > b)
+          const clash = (a: number, b: number) => !(y + h < a || y > b)
 
           while (tries < 200 && used.some((range) => clash(range[0], range[1]))) {
             const dir = tries % 2 === 0 ? 1 : -1
@@ -223,13 +243,13 @@ const AfterprimeProfitCalculator = () => {
 
     selOrder.forEach((broker, idx) => {
       if (!broker || broker === "None" || broker === "Afterprime") return
-      if (cost[broker] == null) return
+      if (cost[broker as keyof typeof cost] == null) return
       if (defs.some((x) => x.label === broker)) return
 
       defs.push({
         label: broker,
         color: selColors[idx] || "#ef4444",
-        c: cost[broker],
+        c: cost[broker as keyof typeof cost],
       })
     })
 
@@ -253,16 +273,16 @@ const AfterprimeProfitCalculator = () => {
   }
 
   // Draw chart
-  const drawChart = (calc) => {
+  const drawChart = (calc: any) => {
     if (chartInstance.current) {
       chartInstance.current.destroy()
     }
 
     if (!chartRef.current) return
 
-    window.__calcStart = calc.start
+    ;(window as any).__calcStart = calc.start
 
-    const datasets = calc.series.map((s) => ({
+    const datasets = calc.series.map((s: any) => ({
       label: s.d.label,
       data: s.data,
       borderColor: s.d.color,
@@ -315,7 +335,7 @@ const AfterprimeProfitCalculator = () => {
             },
             ticks: {
               color: "#cbd5e1",
-              callback: (v) => "$" + v.toLocaleString(),
+              callback: (v: any) => "$" + v.toLocaleString(),
             },
             grid: { color: "rgba(148,163,184,.15)" },
           },
@@ -331,11 +351,11 @@ const AfterprimeProfitCalculator = () => {
   }
 
   // Update KPIs
-  const updateKpis = (calc) => {
+  const updateKpis = (calc: any) => {
     const b1Name = inputs.b1 || "Broker 1"
-    const apSeries = calc.series.find((s) => s.d.label === "Afterprime")
-    const indSeries = calc.series.find((s) => s.d.label === "Industry Average")
-    const b1Series = calc.series.find((s) => s.d.label === b1Name)
+    const apSeries = calc.series.find((s: any) => s.d.label === "Afterprime")
+    const indSeries = calc.series.find((s: any) => s.d.label === "Industry Average")
+    const b1Series = calc.series.find((s: any) => s.d.label === b1Name)
 
     const apProfit = apSeries ? apSeries.data.slice(-1)[0] : 0
     const indProfit = indSeries ? indSeries.data.slice(-1)[0] : 0
@@ -391,7 +411,7 @@ const AfterprimeProfitCalculator = () => {
   }, [])
 
   return (
-     <section
+    <section
       id="costs"
       ref={sectionRef}
       className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background to-brand-navy-light"
@@ -405,185 +425,215 @@ const AfterprimeProfitCalculator = () => {
             compound.
           </p>
         </div>
-    <div className="w-full space-y-6 rounded-2xl border border-white/10 bg-gradient-to-br from-slate-900/50 to-slate-800/30 p-6 md:p-8 backdrop-blur-sm">
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-white md:text-3xl">Your Cost Advantage</h2>
-          <p className="mt-2 text-sm text-slate-400">
-            Adjust balance, months, lots, and monthly return. Broker costs use ForexBenchmark 7‑day averages.
-          </p>
-        </div>
-        <button
-          onClick={reset}
-          className="w-full rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2 font-semibold text-white transition-all hover:shadow-lg hover:shadow-orange-500/50 sm:w-auto"
+
+        {/* Calculator Container with Animation */}
+        <div
+          className={`rounded-xl border border-border bg-card/50 backdrop-blur-sm p-8 transition-all duration-1000 ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+          }`}
         >
-          Reset
-        </button>
-      </div>
+          <div className="w-full space-y-6">
+            {/* Header */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-white md:text-3xl">Your Cost Advantage</h2>
+                <p className="mt-2 text-sm text-slate-400">
+                  Adjust balance, months, lots, and monthly return. Broker costs use ForexBenchmark 7‑day averages.
+                </p>
+              </div>
+              <button
+                onClick={reset}
+                className="w-full rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2 font-semibold text-white transition-all hover:shadow-lg hover:shadow-orange-500/50 sm:w-auto"
+              >
+                Reset
+              </button>
+            </div>
 
-      {/* Inputs Grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-            Starting Balance (USD)
-          </label>
-          <input
-            type="number"
-            min="100"
-            step="100"
-            value={inputs.start}
-            onChange={(e) => setInputs((prev) => ({ ...prev, start: Number.parseFloat(e.target.value) }))}
-            className="w-full rounded-lg border border-white/10 bg-slate-800/50 px-3 py-2 text-white placeholder-slate-500 transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-          />
-        </div>
+            {/* Inputs Grid */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  Starting Balance (USD)
+                </label>
+                <input
+                  type="number"
+                  min="100"
+                  step="100"
+                  value={inputs.start}
+                  onChange={(e) => setInputs((prev) => ({ ...prev, start: Number.parseFloat(e.target.value) }))}
+                  className="w-full rounded-lg border border-white/10 bg-slate-800/50 px-3 py-2 text-white placeholder-slate-500 transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+                />
+              </div>
 
-        <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">Broker 1 (Primary)</label>
-          <select
-            value={inputs.b1}
-            onChange={(e) => setInputs((prev) => ({ ...prev, b1: e.target.value }))}
-            className="w-full rounded-lg border border-white/10 bg-slate-800/50 px-3 py-2 text-white transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-          >
-            {buildOptions(false)}
-          </select>
-        </div>
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">Broker 1 (Primary)</label>
+                <select
+                  value={inputs.b1}
+                  onChange={(e) => setInputs((prev) => ({ ...prev, b1: e.target.value }))}
+                  className="w-full rounded-lg border border-white/10 bg-slate-800/50 px-3 py-2 text-white transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+                >
+                  {buildOptions(false)}
+                </select>
+              </div>
 
-        <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">Broker 2</label>
-          <select
-            value={inputs.b2}
-            onChange={(e) => setInputs((prev) => ({ ...prev, b2: e.target.value }))}
-            className="w-full rounded-lg border border-white/10 bg-slate-800/50 px-3 py-2 text-white transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-          >
-            {buildOptions(true)}
-          </select>
-        </div>
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">Broker 2</label>
+                <select
+                  value={inputs.b2}
+                  onChange={(e) => setInputs((prev) => ({ ...prev, b2: e.target.value }))}
+                  className="w-full rounded-lg border border-white/10 bg-slate-800/50 px-3 py-2 text-white transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+                >
+                  {buildOptions(true)}
+                </select>
+              </div>
 
-        <div className="space-y-2">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">Broker 3</label>
-          <select
-            value={inputs.b3}
-            onChange={(e) => setInputs((prev) => ({ ...prev, b3: e.target.value }))}
-            className="w-full rounded-lg border border-white/10 bg-slate-800/50 px-3 py-2 text-white transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-          >
-            {buildOptions(true)}
-          </select>
-        </div>
-      </div>
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">Broker 3</label>
+                <select
+                  value={inputs.b3}
+                  onChange={(e) => setInputs((prev) => ({ ...prev, b3: e.target.value }))}
+                  className="w-full rounded-lg border border-white/10 bg-slate-800/50 px-3 py-2 text-white transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+                >
+                  {buildOptions(true)}
+                </select>
+              </div>
+            </div>
 
-      {/* Sliders */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="space-y-3 rounded-lg border border-white/10 bg-slate-800/30 p-4">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-            Lots per Month (1–1000)
-          </label>
-          <div className="flex items-center gap-3">
-            <input
-              type="range"
-              min="1"
-              max="1000"
-              step="1"
-              value={inputs.lots}
-              onChange={(e) => syncInput("lots", e.target.value, 1, 1000, 1)}
-              className="h-2 w-full cursor-pointer rounded-full bg-gradient-to-r from-amber-500 to-pink-500 accent-amber-500"
-            />
-            <input
-              type="number"
-              min="1"
-              max="1000"
-              step="1"
-              value={inputs.lots}
-              onChange={(e) => syncInput("lots", e.target.value, 1, 1000, 1)}
-              className="w-20 rounded-lg border border-white/10 bg-slate-800/50 px-2 py-1 text-center text-white focus:border-amber-500 focus:outline-none"
-            />
+            {/* Sliders */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div className="space-y-3 rounded-lg border border-white/10 bg-slate-800/30 p-4">
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  Lots per Month (1–1000)
+                </label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min="1"
+                    max="1000"
+                    step="1"
+                    value={inputs.lots}
+                    onChange={(e) => syncInput("lots", e.target.value, 1, 1000, 1)}
+                    className="h-2 w-full cursor-pointer rounded-full bg-gradient-to-r from-amber-500 to-pink-500 accent-amber-500"
+                  />
+                  <input
+                    type="number"
+                    min="1"
+                    max="1000"
+                    step="1"
+                    value={inputs.lots}
+                    onChange={(e) => syncInput("lots", e.target.value, 1, 1000, 1)}
+                    className="w-20 rounded-lg border border-white/10 bg-slate-800/50 px-2 py-1 text-center text-white focus:border-amber-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3 rounded-lg border border-white/10 bg-slate-800/30 p-4">
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">Monthly Return (%)</label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min="-10"
+                    max="10"
+                    step="0.1"
+                    value={inputs.ret}
+                    onChange={(e) => syncInput("ret", e.target.value, -10, 10, 0.1)}
+                    className="h-2 w-full cursor-pointer rounded-full bg-gradient-to-r from-pink-500 to-purple-500 accent-pink-500"
+                  />
+                  <input
+                    type="number"
+                    min="-10"
+                    max="10"
+                    step="0.1"
+                    value={inputs.ret}
+                    onChange={(e) => syncInput("ret", e.target.value, -10, 10, 0.1)}
+                    className="w-20 rounded-lg border border-white/10 bg-slate-800/50 px-2 py-1 text-center text-white focus:border-pink-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3 rounded-lg border border-white/10 bg-slate-800/30 p-4">
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">Months (1–60)</label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min="1"
+                    max="60"
+                    step="1"
+                    value={inputs.months}
+                    onChange={(e) => syncInput("months", e.target.value, 1, 60, 1)}
+                    className="h-2 w-full cursor-pointer rounded-full bg-gradient-to-r from-purple-500 to-amber-500 accent-purple-500"
+                  />
+                  <input
+                    type="number"
+                    min="1"
+                    max="60"
+                    step="1"
+                    value={inputs.months}
+                    onChange={(e) => syncInput("months", e.target.value, 1, 60, 1)}
+                    className="w-20 rounded-lg border border-white/10 bg-slate-800/50 px-2 py-1 text-center text-white focus:border-purple-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* KPIs */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="rounded-lg border border-green-500/30 bg-gradient-to-br from-green-500/10 to-emerald-500/5 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Afterprime Profit</p>
+                <p className="mt-2 text-2xl font-bold text-green-400">{kpis.kAP}</p>
+                <p className="mt-1 text-xs text-slate-500">{kpis.kAPRet}</p>
+              </div>
+
+              <div className="rounded-lg border border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-cyan-500/5 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{kpis.b1NameB} Profit</p>
+                <p className="mt-2 text-2xl font-bold text-blue-400">{kpis.kB1}</p>
+                <p className="mt-1 text-xs text-slate-500">{kpis.kB1Ret}</p>
+              </div>
+
+              <div className="rounded-lg border border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-orange-500/5 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Afterprime Advantage</p>
+                <p className="mt-2 text-2xl font-bold text-amber-400">{kpis.kAdv}</p>
+                <p className="mt-1 text-xs text-slate-500">{kpis.kAdvPct}</p>
+              </div>
+            </div>
+
+            {/* Chart */}
+            <div className="overflow-x-auto rounded-lg border border-white/10 bg-slate-800/30 p-4">
+              <div className="relative" style={{ height: "400px", minWidth: "600px" }}>
+                <canvas ref={chartRef} />
+              </div>
+              <p className="mt-3 text-xs text-slate-500">
+                Source: ForexBenchmark. Day session 04:00–22:00. Past averages don't guarantee future outcomes. Equity floored
+                at $0.
+              </p>
+            </div>
           </div>
         </div>
 
-        <div className="space-y-3 rounded-lg border border-white/10 bg-slate-800/30 p-4">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">Monthly Return (%)</label>
-          <div className="flex items-center gap-3">
-            <input
-              type="range"
-              min="-10"
-              max="10"
-              step="0.1"
-              value={inputs.ret}
-              onChange={(e) => syncInput("ret", e.target.value, -10, 10, 0.1)}
-              className="h-2 w-full cursor-pointer rounded-full bg-gradient-to-r from-pink-500 to-purple-500 accent-pink-500"
-            />
-            <input
-              type="number"
-              min="-10"
-              max="10"
-              step="0.1"
-              value={inputs.ret}
-              onChange={(e) => syncInput("ret", e.target.value, -10, 10, 0.1)}
-              className="w-20 rounded-lg border border-white/10 bg-slate-800/50 px-2 py-1 text-center text-white focus:border-pink-500 focus:outline-none"
-            />
+        {/* Key Stats - Kept from original */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+          <div className="p-6 rounded-lg border border-border bg-card/50 backdrop-blur-sm text-center">
+            <div className="text-3xl font-bold bg-gradient-to-r from-brand-gold to-brand-orange bg-clip-text text-transparent mb-2">
+              42.0%
+            </div>
+            <p className="text-muted-foreground text-sm">Lower costs than industry average</p>
           </div>
-        </div>
-
-        <div className="space-y-3 rounded-lg border border-white/10 bg-slate-800/30 p-4">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">Months (1–60)</label>
-          <div className="flex items-center gap-3">
-            <input
-              type="range"
-              min="1"
-              max="60"
-              step="1"
-              value={inputs.months}
-              onChange={(e) => syncInput("months", e.target.value, 1, 60, 1)}
-              className="h-2 w-full cursor-pointer rounded-full bg-gradient-to-r from-purple-500 to-amber-500 accent-purple-500"
-            />
-            <input
-              type="number"
-              min="1"
-              max="60"
-              step="1"
-              value={inputs.months}
-              onChange={(e) => syncInput("months", e.target.value, 1, 60, 1)}
-              className="w-20 rounded-lg border border-white/10 bg-slate-800/50 px-2 py-1 text-center text-white focus:border-purple-500 focus:outline-none"
-            />
+          <div className="p-6 rounded-lg border border-border bg-card/50 backdrop-blur-sm text-center">
+            <div className="text-3xl font-bold bg-gradient-to-r from-brand-pink to-brand-purple bg-clip-text text-transparent mb-2">
+              $4.20
+            </div>
+            <p className="text-muted-foreground text-sm">Cost per standard lot (verified)</p>
+          </div>
+          <div className="p-6 rounded-lg border border-border bg-card/50 backdrop-blur-sm text-center">
+            <div className="text-3xl font-bold bg-gradient-to-r from-brand-gold via-brand-pink to-brand-purple bg-clip-text text-transparent mb-2">
+              Real-Time
+            </div>
+            <p className="text-muted-foreground text-sm">Updated daily from ForexBenchmark</p>
           </div>
         </div>
       </div>
-
-      {/* KPIs */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-lg border border-green-500/30 bg-gradient-to-br from-green-500/10 to-emerald-500/5 p-4">
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Afterprime Profit</p>
-          <p className="mt-2 text-2xl font-bold text-green-400">{kpis.kAP}</p>
-          <p className="mt-1 text-xs text-slate-500">{kpis.kAPRet}</p>
-        </div>
-
-        <div className="rounded-lg border border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-cyan-500/5 p-4">
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{kpis.b1NameB} Profit</p>
-          <p className="mt-2 text-2xl font-bold text-blue-400">{kpis.kB1}</p>
-          <p className="mt-1 text-xs text-slate-500">{kpis.kB1Ret}</p>
-        </div>
-
-        <div className="rounded-lg border border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-orange-500/5 p-4">
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Afterprime Advantage</p>
-          <p className="mt-2 text-2xl font-bold text-amber-400">{kpis.kAdv}</p>
-          <p className="mt-1 text-xs text-slate-500">{kpis.kAdvPct}</p>
-        </div>
-      </div>
-
-      {/* Chart */}
-      <div className="overflow-x-auto rounded-lg border border-white/10 bg-slate-800/30 p-4">
-        <div className="relative" style={{ height: "400px", minWidth: "600px" }}>
-          <canvas ref={chartRef} />
-        </div>
-        <p className="mt-3 text-xs text-slate-500">
-          Source: ForexBenchmark. Day session 04:00–22:00. Past averages don't guarantee future outcomes. Equity floored
-          at $0.
-        </p>
-      </div>
-    </div>
-           </div>
     </section>
   )
 }
 
-export default AfterprimeProfitCalculator
+export default CostAdvantageSection
