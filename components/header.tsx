@@ -72,9 +72,9 @@ export default function Header() {
         </nav>
 
         {/* CTA Button */}
-        <button className="px-4 sm:px-6 py-2.5 rounded-lg bg-gradient-to-r from-brand-gold via-brand-orange to-brand-pink text-background font-bold text-xs sm:text-sm hover:shadow-2xl hover:shadow-brand-pink/60 transition-all duration-300 hover:scale-105 active:scale-95 flex-shrink-0">
-          Get Started
-        </button>
+       <button className="px-4 sm:px-6 py-2.5 rounded-lg bg-gradient-to-r from-[#FFD700] via-[#FFA500] to-[#FF69B4] text-[#1a1a1a] font-bold text-xs sm:text-sm hover:shadow-2xl hover:shadow-[#FF69B4]/60 transition-all duration-300 hover:scale-105 active:scale-95 flex-shrink-0">
+  Get Started
+</button>
       </div>
     </header>
   )
